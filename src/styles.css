@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --color-canvas: #f6f1e6;
+  --color-surface: #fffdf8;
+  --color-ink: #2a2118;
+  --color-muted: #6e6256;
+  --color-line: #e6dccb;
+  --color-clay: #c4622d;
+  --color-clay-deep: #9a4520;
+  --color-grove: #1b5e45;
+  --color-grove-soft: #e5f2ea;
+  --color-cream: #f3ead8;
+  --color-heart: #b42318;
+  --shadow-card: 0 10px 28px rgb(42 33 24 / 0.08);
+  --spacing-header: 4.5rem;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  #root,
+  body,
+  html {
+    max-width: 100%;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-grove);
+    outline-offset: 2px;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility zellige {
+  height: 0.5rem;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-grove) 0 10px,
+    var(--color-cream) 10px 14px,
+    var(--color-heart) 14px 22px,
+    var(--color-cream) 22px 26px,
+    var(--color-grove) 26px 36px,
+    var(--color-clay) 36px 42px,
+    var(--color-cream) 42px 48px
+  );
+}
+
+html[lang="ar"] {
+  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cairo", Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

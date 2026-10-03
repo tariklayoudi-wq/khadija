@@ -1,0 +1,32 @@
+{
+  "name": "khadija",
+  "live_url": "https://khadija-khouribga.azurewebsites.net",
+  "azure": {
+    "account": "tlayoudi@gmail.com",
+    "subscription": "Azure subscription 1",
+    "resource_group": "khadija-francecentral",
+    "app_name": "khadija-khouribga",
+    "plan_sku": "F1",
+    "os": "Windows",
+    "location": "francecentral",
+    "blocked_location": "westeurope"
+  },
+  "whatsapp_e164": "212704221975",
+  "languages": ["ar", "fr"],
+  "edit": [
+    "src/routes",
+    "src/components",
+    "src/lib/catalog.ts",
+    "src/lib/l10n.ts",
+    "src/lib/whatsapp.ts",
+    "public/media"
+  ],
+  "build": {
+    "install": "npm ci",
+    "env": { "AZURE_BUILD": "1" },
+    "command": "npx vite build",
+    "output": "dist/client",
+    "spa_fallback": "deploy/web.config"
+  },
+  "publish_command": "powershell -ExecutionPolicy Bypass -File scripts/publish-azure.ps1"
+}
