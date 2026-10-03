@@ -18,8 +18,8 @@ export function ShopIntro() {
         <p className="mt-5 text-xs text-cream/75">{ar ? "الاستلام بخريبكة · التوصيل حسب الاتفاق" : "Retrait à Khouribga · Livraison à convenir"}</p>
       </div>
       <div className="hero-portrait relative">
-        <img src={`${import.meta.env.BASE_URL}media/khdija.jpg`} alt={ar ? "خديجة" : "Khadija"} width="1367" height="1823" fetchPriority="high" className="h-full w-full object-cover" />
-        <span className="absolute bottom-5 start-5 rounded-full bg-surface px-4 py-2 text-sm font-semibold text-grove">{ar ? "مرحبا بكم عند خديجة" : "Bienvenue chez Khadija"}</span>
+        <img src={`${import.meta.env.BASE_URL}media/couscous.jpg`} alt={ar ? "كسكس بالخضر" : "Couscous aux légumes"} width="1500" height="1500" fetchPriority="high" className="h-full w-full object-cover" />
+        <span className="absolute bottom-5 start-5 rounded-full bg-surface px-4 py-2 text-sm font-semibold text-grove">{ar ? "مذاق الدار" : "Le goût de la maison"}</span>
       </div>
     </section>
     <div className="mb-6 grid gap-3 sm:grid-cols-3">

@@ -35,6 +35,6 @@ if (-not (Test-Path (Join-Path $out "index.html"))) {
 Copy-Item (Join-Path $root "deploy\web.config") (Join-Path $out "web.config") -Force
 $zip = Join-Path $root "khadija-release.zip"
 Compress-Archive -Path (Join-Path $out "*") -DestinationPath $zip -Force
-& $azCmd webapp deploy --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --src-path $zip --type zip -o none
+& $azCmd webapp deploy --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --src-path $zip --type zip --clean true -o none
 if ($LASTEXITCODE -ne 0) { throw "Azure deploy failed" }
 Write-Output ("URL=" + $cfg.live_url)
