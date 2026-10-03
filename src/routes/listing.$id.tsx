@@ -6,6 +6,7 @@ import { categoryById, defaultSearch, formatPrice, SELLER } from "@/lib/catalog"
 import { cityName, pick, showUnit, useUi } from "@/lib/l10n";
 import { useAllListings } from "@/lib/market-store";
 import { listingInquiry, whatsappHref, WHATSAPP_DISPLAY } from "@/lib/whatsapp";
+import { useShop } from "@/lib/shop-store";
 import { Shell } from "@/components/shell";
 import { ListingCard, SaveButton } from "@/components/listing-card";
 import { Composer } from "@/components/composer";
@@ -18,6 +19,7 @@ function ListingPage() {
   const { t, locale } = useUi();
   const { id } = Route.useParams();
   const navigate = useNavigate();
+  const addToCart=useShop(s=>s.add);
   const listings = useAllListings();
   const listing = listings.find((item) => item.id === id);
   const [photo, setPhoto] = useState(0);
@@ -114,6 +116,7 @@ function ListingPage() {
                 <p className="font-semibold text-grove">{formatPrice(listing.price * quantity)}</p>
               </div>
               <p className="mt-2 text-xs leading-6 text-muted">{locale === "ar" ? "مجموع المنتجات دون التوصيل. التوفر والثمن النهائي يؤكدان على واتساب." : "Sous-total hors livraison. Disponibilité et total final à confirmer sur WhatsApp."}</p>
+              {!listing.mine ? <button type="button" onClick={()=>{addToCart(listing.id,quantity);void navigate({to:'/panier'});}} disabled={(listing as {availability?:string}).availability==='unavailable'} className="mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-clay px-4 text-sm font-semibold text-white disabled:opacity-40"><ShoppingBag className="size-4" />{locale==='ar'?'أضف للسلة وأكمل الطلب':'Ajouter et passer commande'}</button> : null}
               <div className="mt-3 flex gap-2">
                 <a href={whatsappHref(listingInquiry(listing, locale,
                   locale === "ar" ? `السلام عليكم خديجة، أود طلب ${quantity} من هذا المنتوج. مجموع المنتجات: ${formatPrice(listing.price * quantity)}. هل هو متوفر؟ أرجو تأكيد المجموع والتوصيل أو الاستلام.` : `Salam Khadija, je souhaite commander ${quantity} unité(s) de ce produit. Sous-total : ${formatPrice(listing.price * quantity)}. Est-il disponible ? Merci de confirmer le total et la livraison ou le retrait.`,

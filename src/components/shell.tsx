@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Heart, LayoutGrid, MapPin, MessageCircle, Plus, Search, Tag } from "lucide-react";
+import { Heart, LayoutGrid, MapPin, MessageCircle, Plus, Search, Tag, ShoppingBag } from "lucide-react";
 import { Toaster } from "sonner";
 import { CATEGORIES, CITIES, defaultSearch, SELLER } from "@/lib/catalog";
 import { cityLabel, useBrowseSearch, usePatchBrowse } from "@/lib/browse";
 import { pick, useLocale, useUi } from "@/lib/l10n";
 import { useAllListings, useMarket } from "@/lib/market-store";
+import { useShop } from "@/lib/shop-store";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -17,25 +18,30 @@ const NAV = [
 
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const cartCount = useShop(s => s.cart.reduce((n,i)=>n+i.quantity,0));
   const saved = useMarket((s) => s.saved.length);
   const { t, locale, setLocale } = useUi();
 
   useEffect(() => {
     void useMarket.persist.rehydrate();
     void useLocale.persist.rehydrate();
+    void useShop.persist.rehydrate();
+    void useShop.getState().load();
   }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     document.title = t.docTitle;
+    const campaign = window.location.search;
+    if(campaign.includes("utm_"))sessionStorage.setItem("khadija-campaign",campaign);
   }, [locale, t.docTitle]);
 
   return (
     <div className="min-h-screen bg-canvas text-ink">
       <Toaster position="top-center" />
       <header className="sticky top-0 z-30 bg-grove text-cream">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4">
+        <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-3 px-4">
           <Link to="/" search={defaultSearch} className="flex shrink-0 items-center gap-2">
             <span className="grid size-9 place-items-center rounded-full bg-cream font-display text-sm font-semibold text-grove">
               Kh
@@ -51,12 +57,8 @@ export function Shell({ children }: { children: ReactNode }) {
           <LangSwitch locale={locale} setLocale={setLocale} />
           <div className="ms-auto flex items-center gap-2 md:ms-0">
             <CitySelect className="hidden sm:flex" />
-            <Link
-              to="/vendi"
-              className="inline-flex h-11 items-center gap-1.5 rounded-full bg-clay px-4 text-sm font-semibold text-surface"
-            >
-              <Plus className="size-4" />
-              {t.sell}
+            <Link to="/panier" className="cart-header inline-flex h-11 items-center gap-2 rounded-full bg-clay px-4 text-sm font-semibold text-surface">
+              <ShoppingBag className="size-5" /><span>{locale === "ar" ? "السلة" : "Panier"}</span>{cartCount>0?<span className="rounded-full bg-surface px-2 text-clay">{cartCount}</span>:null}
             </Link>
           </div>
         </div>
@@ -66,51 +68,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="zellige" />
       </header>
 
-      <div className="mx-auto flex max-w-7xl">
-        <aside className="sticky top-header hidden h-[calc(100dvh-var(--spacing-header))] w-72 shrink-0 overflow-y-auto border-e border-line bg-canvas lg:block">
-          <nav className="flex flex-col gap-1 p-3" aria-label="Marketplace">
-            {NAV.map((item) => {
-              const active = item.exact ? pathname === item.to : pathname.startsWith(item.to);
-              const Icon = item.icon;
-              const badge = item.to === "/salvati" ? saved : 0;
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  search={item.to === "/" ? defaultSearch : item.to === "/messaggi" ? { t: "" } : undefined}
-                  className={cn(
-                    "flex h-12 items-center gap-3 rounded-full px-2 text-sm font-medium",
-                    active ? "bg-surface text-grove shadow-card" : "text-ink hover:bg-surface",
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "grid size-9 place-items-center rounded-full shadow-card",
-                      active ? "bg-grove text-cream" : "bg-surface text-grove",
-                    )}
-                  >
-                    <Icon className="size-5" />
-                  </span>
-                  <span className="flex-1">{t[item.key]}</span>
-                  {badge > 0 ? (
-                    <span className="rounded-full bg-grove-soft px-2 py-0.5 text-xs font-semibold text-grove">
-                      {badge}
-                    </span>
-                  ) : null}
-                </Link>
-              );
-            })}
-          </nav>
-          <SidebarFilters />
-          <div className="m-3 rounded-2xl bg-surface p-3 shadow-card">
-            <p className="truncate font-display text-base font-semibold">
-              {locale === "ar" ? SELLER.nameAr : SELLER.name}
-            </p>
-            <p className="text-xs leading-snug text-muted">
-              {t.family} {SELLER.since}
-            </p>
-          </div>
-        </aside>
+      <div className="mx-auto flex max-w-[1440px]">
         <main className="min-w-0 flex-1 overflow-x-hidden pb-24 lg:pb-10">{children}</main>
       </div>
 
@@ -118,7 +76,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <ul className="mx-auto grid max-w-lg grid-cols-4">
           <Tab to="/" label={t.explore} icon={LayoutGrid} active={pathname === "/"} search={defaultSearch} />
           <Tab to="/salvati" label={t.saved} icon={Heart} active={pathname.startsWith("/salvati")} />
-          <Tab to="/vendi" label={t.sell} icon={Plus} active={pathname.startsWith("/vendi")} />
+          <Tab to="/panier" label={locale === "ar" ? "السلة" : "Panier"} icon={ShoppingBag} active={pathname.startsWith("/panier")} badge={cartCount} />
           <Tab
             to="/messaggi"
             label={t.messages}
@@ -140,7 +98,7 @@ function Tab({
   search,
   badge = 0,
 }: {
-  to: "/" | "/salvati" | "/vendi" | "/messaggi";
+  to: "/" | "/salvati" | "/vendi" | "/messaggi" | "/panier";
   label: string;
   icon: typeof Heart;
   active: boolean;

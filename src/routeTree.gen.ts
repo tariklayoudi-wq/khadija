@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MessaggiRouteImport } from './routes/messaggi'
+import { Route as PanierRouteImport } from './routes/panier'
 import { Route as SalvatiRouteImport } from './routes/salvati'
 import { Route as VendiRouteImport } from './routes/vendi'
 import { Route as VenditeRouteImport } from './routes/vendite'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const MessaggiRoute = MessaggiRouteImport.update({
   id: '/messaggi',
   path: '/messaggi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalvatiRoute = SalvatiRouteImport.update({
@@ -50,6 +56,7 @@ const ListingIdRoute = ListingIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/messaggi': typeof MessaggiRoute
+  '/panier': typeof PanierRoute
   '/salvati': typeof SalvatiRoute
   '/vendi': typeof VendiRoute
   '/vendite': typeof VenditeRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/messaggi': typeof MessaggiRoute
+  '/panier': typeof PanierRoute
   '/salvati': typeof SalvatiRoute
   '/vendi': typeof VendiRoute
   '/vendite': typeof VenditeRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/messaggi': typeof MessaggiRoute
+  '/panier': typeof PanierRoute
   '/salvati': typeof SalvatiRoute
   '/vendi': typeof VendiRoute
   '/vendite': typeof VenditeRoute
@@ -75,13 +84,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/messaggi' | '/salvati' | '/vendi' | '/vendite' | '/listing/$id'
+    | '/'
+    | '/messaggi'
+    | '/panier'
+    | '/salvati'
+    | '/vendi'
+    | '/vendite'
+    | '/listing/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/messaggi' | '/salvati' | '/vendi' | '/vendite' | '/listing/$id'
+  to:
+    | '/'
+    | '/messaggi'
+    | '/panier'
+    | '/salvati'
+    | '/vendi'
+    | '/vendite'
+    | '/listing/$id'
   id:
     | '__root__'
     | '/'
     | '/messaggi'
+    | '/panier'
     | '/salvati'
     | '/vendi'
     | '/vendite'
@@ -91,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MessaggiRoute: typeof MessaggiRoute
+  PanierRoute: typeof PanierRoute
   SalvatiRoute: typeof SalvatiRoute
   VendiRoute: typeof VendiRoute
   VenditeRoute: typeof VenditeRoute
@@ -111,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/messaggi'
       fullPath: '/messaggi'
       preLoaderRoute: typeof MessaggiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/salvati': {
@@ -147,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MessaggiRoute: MessaggiRoute,
+  PanierRoute: PanierRoute,
   SalvatiRoute: SalvatiRoute,
   VendiRoute: VendiRoute,
   VenditeRoute: VenditeRoute,

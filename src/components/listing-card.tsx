@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Heart } from "lucide-react";
+import { Heart, Plus } from "lucide-react";
 import { formatPrice, type Listing } from "@/lib/catalog";
 import { cityName, pick, showUnit, useUi } from "@/lib/l10n";
 import { useMarket } from "@/lib/market-store";
+import { useShop } from "@/lib/shop-store";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export function SaveButton({ id, className }: { id: string; className?: string }) {
@@ -33,8 +35,10 @@ export function SaveButton({ id, className }: { id: string; className?: string }
 export function ListingCard({ listing }: { listing: Listing }) {
   const { locale } = useUi();
   const title = pick(listing.title, locale);
+  const add = useShop(s=>s.add);
+  const unavailable = (listing as {availability?:string}).availability === "unavailable";
   return (
-    <article className="group relative rounded-2xl bg-surface p-2 shadow-card">
+    <article className="product-card group relative rounded-2xl bg-surface p-2 shadow-card">
       <Link to="/listing/$id" params={{ id: listing.id }} className="block">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-cream">
           <img
@@ -58,6 +62,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
           </p>
         </div>
       </Link>
+      {!listing.mine ? <button disabled={unavailable} type="button" onClick={()=>{add(listing.id);toast.success(locale === 'ar' ? 'أضيف إلى السلة' : 'Ajouté au panier');}} className="product-add mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-grove-soft px-3 text-sm font-semibold text-grove disabled:opacity-50"><Plus className="size-4" />{unavailable ? (locale === 'ar' ? 'غير متوفر' : 'Indisponible') : (locale === 'ar' ? 'أضف للسلة' : 'Ajouter')}</button> : null}
       <SaveButton id={listing.id} className="absolute end-3 top-3" />
     </article>
   );

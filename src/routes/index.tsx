@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 import { LayoutGrid } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CATEGORIES, CITIES, defaultSearch, isCategory, isCity, PRICE_CAPS, type HomeSearch, type SortKey } from "@/lib/catalog";
+import { CATEGORIES, CITIES, LISTINGS, defaultSearch, isCategory, isCity, PRICE_CAPS, type HomeSearch, type SortKey } from "@/lib/catalog";
 import { cityLabel, filterListings, usePatchBrowse } from "@/lib/browse";
 import { pick, useUi } from "@/lib/l10n";
 import { useAllListings } from "@/lib/market-store";
@@ -58,7 +58,7 @@ function Home() {
                 label={pick(item.label, locale)}
                 onClick={() => patch({ cat: item.id })}
               >
-                <Icon className="size-6" />
+                <img src={LISTINGS.find(p=>p.category===item.id)?.images[0]} alt="" className="h-full w-full rounded-full object-cover" loading="lazy" />
               </CircleCat>
             );
           })}
@@ -121,7 +121,7 @@ function Home() {
             </button>
           </div>
         ) : (
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
             {items.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}

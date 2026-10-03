@@ -1,3 +1,4 @@
+import { useShop } from "./shop-store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getListing, LISTINGS, replyFor, type Listing } from "@/lib/catalog";
@@ -83,5 +84,6 @@ export const useMarket = create<MarketState>()(
 
 export function useAllListings() {
   const extras = useMarket((s) => s.extras);
-  return [...extras, ...LISTINGS];
+  const products = useShop((s) => s.products);
+  return [...extras, ...(products ?? LISTINGS)];
 }
