@@ -12,21 +12,29 @@ if (-not (Test-Path $azCmd)) {
 & $azCmd account show --query "{name:name,user:user.name}" -o json
 if ($LASTEXITCODE -ne 0) { throw "Run az login first" }
 
-if (-not (Test-Path "node_modules")) { npm ci }
+$cfg = Get-Content (Join-Path $root "deploy\azure.json") -Raw | ConvertFrom-Json
+$planId = & $azCmd webapp show --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --query serverFarmId -o tsv
+if ($LASTEXITCODE -ne 0 -or -not $planId) { throw "Existing webapp not found; refusing resource creation" }
+$sku = & $azCmd appservice plan show --ids $planId --query sku.name -o tsv
+if ($LASTEXITCODE -ne 0 -or $sku.Trim() -ne "F1") { throw "Expected F1 plan; refusing deployment" }
 
+npm ci --no-audit --no-fund
+if ($LASTEXITCODE -ne 0) { throw "npm ci failed" }
+npm run typecheck
+if ($LASTEXITCODE -ne 0) { throw "Typecheck failed" }
 $env:AZURE_BUILD = "1"
 Remove-Item Env:PAGES_BUILD -ErrorAction SilentlyContinue
 npx vite build
 if ($LASTEXITCODE -ne 0) { throw "vite build failed" }
-
 $out = Join-Path $root "dist\client"
-if (-not (Test-Path (Join-Path $out "index.html"))) { $out = Join-Path $root "dist" }
+# TanStack Start SPA output uses _shell.html, not index.html.
+if (-not (Test-Path (Join-Path $out "index.html"))) {
+  if (-not (Test-Path (Join-Path $out "_shell.html"))) { throw "Missing SPA shell" }
+  Copy-Item (Join-Path $out "_shell.html") (Join-Path $out "index.html")
+}
 Copy-Item (Join-Path $root "deploy\web.config") (Join-Path $out "web.config") -Force
-
-$cfg = Get-Content (Join-Path $root "deploy\azure.json") -Raw | ConvertFrom-Json
-Push-Location $out
-& $azCmd webapp up --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --location $cfg.azure.location --sku $cfg.azure.plan_sku --html -o none
-$code = $LASTEXITCODE
-Pop-Location
-if ($code -ne 0) { throw "az webapp up failed: $code" }
+$zip = Join-Path $root "khadija-release.zip"
+Compress-Archive -Path (Join-Path $out "*") -DestinationPath $zip -Force
+& $azCmd webapp deploy --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --src-path $zip --type zip -o none
+if ($LASTEXITCODE -ne 0) { throw "Azure deploy failed" }
 Write-Output ("URL=" + $cfg.live_url)

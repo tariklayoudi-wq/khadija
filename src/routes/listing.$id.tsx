@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, MapPin } from "lucide-react";
+import { ChevronLeft, MapPin, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { categoryById, defaultSearch, formatPrice, SELLER } from "@/lib/catalog";
-import { cityName, pick, showUnit, timeAgo, useUi } from "@/lib/l10n";
+import { cityName, pick, showUnit, useUi } from "@/lib/l10n";
 import { useAllListings } from "@/lib/market-store";
-import { listingInquiry, openWhatsapp, WHATSAPP_DISPLAY } from "@/lib/whatsapp";
+import { listingInquiry, whatsappHref, WHATSAPP_DISPLAY } from "@/lib/whatsapp";
 import { Shell } from "@/components/shell";
 import { ListingCard, SaveButton } from "@/components/listing-card";
 import { Composer } from "@/components/composer";
@@ -21,10 +21,12 @@ function ListingPage() {
   const listings = useAllListings();
   const listing = listings.find((item) => item.id === id);
   const [photo, setPhoto] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const name = locale === "ar" ? SELLER.nameAr : SELLER.name;
 
   useEffect(() => {
     setPhoto(0);
+    setQuantity(1);
   }, [id]);
 
   if (!listing) {
@@ -95,20 +97,32 @@ function ListingPage() {
             <p className="mt-2 flex items-center gap-1 text-sm text-muted">
               <MapPin className="size-4 shrink-0 text-grove" />
               <span>
-                {cityName(listing.city, locale)}، {pick(listing.area, locale)} · {timeAgo(listing.hoursAgo, locale)}
+                {cityName(listing.city, locale)}، {pick(listing.area, locale)}
                 {category ? ` · ${pick(category.label, locale)}` : ""}
               </span>
             </p>
 
-            <div className="mt-4 flex gap-2">
-              <button
-                type="button"
-                onClick={() => openWhatsapp(listingInquiry(listing, locale, "", window.location.href))}
-                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-[#128C7E] px-5 text-sm font-semibold text-white"
-              >
-                {t.messageHer}
-              </button>
-              <SaveButton id={listing.id} className="border border-line shadow-none" />
+            <div className="mt-5 rounded-2xl border border-line bg-surface p-4">
+              <p className="mb-3 text-sm font-semibold">{locale === "ar" ? "طلب هذا المنتوج" : "Demander ce produit"}</p>
+              {listing.mine ? <p className="mb-3 text-sm text-muted">{locale === "ar" ? "مسودة خاصة على هذا الجهاز. ليست إعلاناً منشوراً ولا عرضاً من خديجة." : "Brouillon privé sur cet appareil. Ce n’est pas une annonce publiée ni une offre de Khadija."}</p> : null}
+              <div className="flex items-center justify-between gap-3">
+                <label className="text-sm font-medium">{locale === "ar" ? "الكمية" : "Quantité"}
+                  <select value={quantity} onChange={event => setQuantity(Number(event.target.value))} className="ms-3 h-11 rounded-lg border border-line bg-canvas px-3">
+                    {Array.from({length: 20}, (_,i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                </label>
+                <p className="font-semibold text-grove">{formatPrice(listing.price * quantity)}</p>
+              </div>
+              <p className="mt-2 text-xs leading-6 text-muted">{locale === "ar" ? "مجموع المنتجات دون التوصيل. التوفر والثمن النهائي يؤكدان على واتساب." : "Sous-total hors livraison. Disponibilité et total final à confirmer sur WhatsApp."}</p>
+              <div className="mt-3 flex gap-2">
+                <a href={whatsappHref(listingInquiry(listing, locale,
+                  locale === "ar" ? `السلام عليكم خديجة، أود طلب ${quantity} من هذا المنتوج. مجموع المنتجات: ${formatPrice(listing.price * quantity)}. هل هو متوفر؟ أرجو تأكيد المجموع والتوصيل أو الاستلام.` : `Salam Khadija, je souhaite commander ${quantity} unité(s) de ce produit. Sous-total : ${formatPrice(listing.price * quantity)}. Est-il disponible ? Merci de confirmer le total et la livraison ou le retrait.`,
+                  `https://khadija-khouribga.azurewebsites.net/listing/${listing.id}`))} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-grove px-4 text-sm font-semibold text-white">
+                  <ShoppingBag className="size-4" />{locale === "ar" ? "افتحوا الطلب في واتساب" : "Ouvrir la demande dans WhatsApp"}
+                </a>
+                <SaveButton id={listing.id} className="border border-line shadow-none" />
+              </div>
+              <p className="mt-2 text-xs text-muted">{locale === "ar" ? "لن يُرسل أي شيء قبل أن ترسلوا الرسالة في واتساب." : "Rien n’est envoyé avant votre envoi dans WhatsApp."}</p>
             </div>
 
             <section className="mt-5 rounded-xl border border-line bg-surface p-4">

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /vendi
+Disallow: /vendite
+Disallow: /messaggi
+Disallow: /salvati
+Sitemap: https://khadija-khouribga.azurewebsites.net/sitemap.xml

@@ -31,22 +31,22 @@ export function SaveButton({ id, className }: { id: string; className?: string }
 }
 
 export function ListingCard({ listing }: { listing: Listing }) {
-  const { t, locale } = useUi();
+  const { locale } = useUi();
   const title = pick(listing.title, locale);
   return (
     <article className="group relative rounded-2xl bg-surface p-2 shadow-card">
       <Link to="/listing/$id" params={{ id: listing.id }} className="block">
         <div className="relative aspect-square overflow-hidden rounded-xl bg-cream">
           <img
+            loading="lazy"
+            decoding="async"
+            width="400"
+            height="400"
             src={listing.images[0]}
             alt={title}
             className="h-full w-full object-cover motion-safe:transition motion-safe:duration-200 motion-safe:group-hover:brightness-95"
           />
-          {listing.fresh ? (
-            <span className="absolute start-2 top-2 rounded-full bg-grove px-2.5 py-1 text-xs font-semibold text-cream">
-              {t.today}
-            </span>
-          ) : null}
+
         </div>
         <div className="px-1.5 pb-1 pt-2">
           <p className="font-display text-lg font-semibold leading-tight text-grove">{formatPrice(listing.price)}</p>

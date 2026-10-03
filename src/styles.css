@@ -81,3 +81,12 @@ html[lang="ar"] {
     scroll-behavior: auto;
   }
 }
+
+.shop-hero { display:grid; grid-template-columns: minmax(0,1fr) minmax(200px,0.65fr); }
+.hero-portrait { min-height: 340px; }
+.hero-portrait img { object-position: 50% 35%; }
+@media (max-width: 640px) {
+  .shop-hero { grid-template-columns: 1fr; }
+  .hero-portrait { height: 260px; min-height: 0; }
+  .hero-portrait img { object-position: 50% 30%; }
+}

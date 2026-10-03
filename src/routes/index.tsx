@@ -1,12 +1,13 @@
 import { useMemo, type ReactNode } from "react";
 import { LayoutGrid } from "lucide-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CATEGORIES, CITIES, defaultSearch, isCategory, isCity, PRICE_CAPS, SELLER, type HomeSearch, type SortKey } from "@/lib/catalog";
+import { CATEGORIES, CITIES, defaultSearch, isCategory, isCity, PRICE_CAPS, type HomeSearch, type SortKey } from "@/lib/catalog";
 import { cityLabel, filterListings, usePatchBrowse } from "@/lib/browse";
-import { cityName, pick, useUi } from "@/lib/l10n";
+import { pick, useUi } from "@/lib/l10n";
 import { useAllListings } from "@/lib/market-store";
 import { ListingCard } from "@/components/listing-card";
 import { Shell } from "@/components/shell";
+import { ShopIntro, ShopInfo } from "@/components/shop-intro";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -42,15 +43,7 @@ function Home() {
   return (
     <Shell>
       <div className="min-w-0 px-4 py-4 lg:px-6">
-        {showIntro ? (
-          <section className="mb-5 rounded-2xl border border-line bg-surface p-4 shadow-card">
-            <p className="font-display text-2xl font-semibold leading-none">
-              {locale === "ar" ? SELLER.nameAr : SELLER.name}
-            </p>
-            <p className="mt-1 text-sm font-medium text-clay">{cityName(SELLER.city, locale)}</p>
-            <p className="mt-1 text-sm text-muted">{t.bio}</p>
-          </section>
-        ) : null}
+        {showIntro ? <ShopIntro /> : null}
 
         <div className="flex w-full min-w-0 gap-3 overflow-x-auto no-scrollbar pb-1">
           <CircleCat active={search.cat === "tutti"} label={t.all} onClick={() => patch({ cat: "tutti" })}>
@@ -94,9 +87,9 @@ function Home() {
           </label>
         </div>
 
-        <div className="mt-5 flex items-end justify-between gap-3">
+        <div id="catalogue" className="scroll-mt-40 mt-5 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="font-display text-2xl font-semibold tracking-tight">{title}</h1>
+            <h2 className="font-display text-2xl font-semibold tracking-tight">{title}</h2>
             <p className="text-sm text-muted">
               {items.length === 1 ? t.oneAd : t.nAds(items.length)} · {cityLabel(search.city, locale)}
             </p>
@@ -135,6 +128,7 @@ function Home() {
           </div>
         )}
 
+        <ShopInfo />
         <footer className="mt-10">
           <div className="zellige" />
           <div className="flex flex-wrap items-center justify-between gap-2 py-4 text-xs font-semibold tracking-wide text-muted">

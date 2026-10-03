@@ -3,8 +3,6 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Khdija";
-
 const base = import.meta.env.BASE_URL;
 
 export const Route = createRootRoute({
@@ -12,12 +10,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "خديجة — إعلانات المزرعة" },
+      { title: "خديجة خريبكة — منتجات بلدية | Khadija" },
       {
         name: "description",
         content: "خديجة، سوق خريبكة: لبن وكسكس وعسل وزيوت ومنتجات المزرعة. تصفح الإعلانات وراسل صاحبة المزرعة.",
       },
       { name: "theme-color", content: "#1b5e45" },
+      { property: "og:type", content: "website" },
+      { property: "og:title", content: "خديجة خريبكة · Khadija — Le goût de la maison" },
+      { property: "og:description", content: "Lben, couscous, miel et produits du terroir à Khouribga. Contactez Khadija sur WhatsApp pour confirmer votre commande." },
+      { property: "og:image", content: "https://khadija-khouribga.azurewebsites.net/media/couscous.jpg" },
+      { property: "og:url", content: "https://khadija-khouribga.azurewebsites.net/" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: `${base}favicon.svg` },
