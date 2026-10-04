@@ -18,7 +18,17 @@ Start-Process $invite.url
 '@
 Set-Content -Encoding UTF8 (Join-Path $tools 'Open-Orders.ps1') $open
 $node=(Get-Command node).Source
-$worker=$common+"`n"+"`$env:KHADIJA_ADMIN_KEY=`$key`n`$env:KHADIJA_API='$Api'`n& '$node' (Join-Path `$tools 'agent.cjs')`n"
+$localAi=@'
+if (Test-Path (Join-Path $tools 'local-ai.json')) {
+  $ai=Get-Content (Join-Path $tools 'local-ai.json') -Raw|ConvertFrom-Json
+  $localSecure=Import-Clixml (Join-Path $tools 'model-access.xml')
+  $localPtr=[Runtime.InteropServices.Marshal]::SecureStringToBSTR($localSecure)
+  try { $env:KHADIJA_LOCAL_AI_KEY=[Runtime.InteropServices.Marshal]::PtrToStringBSTR($localPtr) } finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($localPtr) }
+  $env:KHADIJA_LOCAL_AI_URL=$ai.url
+  $env:KHADIJA_LOCAL_AI_MODEL=$ai.model
+}
+'@
+$worker=$common+"`n"+"`$env:KHADIJA_ADMIN_KEY=`$key`n`$env:KHADIJA_API='$Api'`n"+$localAi+"`n& '$node' (Join-Path `$tools 'agent.cjs')`n"
 Set-Content -Encoding UTF8 (Join-Path $tools 'Review-Orders.ps1') $worker
 $desktop=[Environment]::GetFolderPath('Desktop')
 if ($desktop) {
