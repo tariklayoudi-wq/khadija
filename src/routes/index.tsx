@@ -58,7 +58,7 @@ function Home() {
                 label={pick(item.label, locale)}
                 onClick={() => patch({ cat: item.id })}
               >
-                <img src={LISTINGS.find(p=>p.category===item.id)?.images[0]} alt="" className="h-full w-full rounded-full object-cover" loading="lazy" />
+                <img src={LISTINGS.find(p=>p.category===item.id)?.images[0]} alt="" className="size-16 rounded-full object-cover" loading="lazy" />
               </CircleCat>
             );
           })}
@@ -156,7 +156,7 @@ function CircleCat({
     <button type="button" onClick={onClick} className="flex w-24 shrink-0 flex-col items-center gap-1.5">
       <span
         className={cn(
-          "grid size-16 place-items-center rounded-full shadow-card",
+          "grid size-16 place-items-center overflow-hidden rounded-full shadow-card",
           active ? "bg-grove text-cream" : "bg-surface text-grove",
         )}
       >
