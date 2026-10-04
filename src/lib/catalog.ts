@@ -104,7 +104,7 @@ export const PHOTO_PRESETS: { src: string; label: L10n }[] = [
 ];
 
 export const SELLER = {
-  name: "Khdija",
+  name: "Khadija",
   nameAr: "خديجة",
   since: "2019",
   city: "Khouribga",
