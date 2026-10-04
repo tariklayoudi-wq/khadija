@@ -12,7 +12,7 @@ import {
 import type { L10n } from "@/lib/l10n";
 import { cityName, formatPrice as priceOf, pick, showUnit, useLocale } from "@/lib/l10n";
 
-const media = (file: string) => `${import.meta.env.BASE_URL}media/${file}`;
+const media = (file: string) => `${import.meta.env.BASE_URL}media/real/${file === "belboula.jpg" ? "belboula.svg" : file.replace(/\.jpg$/, ".webp")}`;
 
 export type CategoryId =
   | "latticini"
@@ -321,7 +321,7 @@ export const LISTINGS: Listing[] = [
     city: "Khouribga",
     area: { ar: "حي النهضة", fr: "Hay Nahda" },
     hoursAgo: 18,
-    images: [media("datteri.jpg")],
+    images: [media("datteri.jpg"), media("almonds.jpg")],
     description: {
       ar: "تمر لين غير يابس، ولوز كامل. أجمعهما لأنهما يُؤكلان مع اللبن في الدار. أستطيع فصلهما: التمر وحده 28 درهماً للكيلو.",
       fr: "Dattes souples, pas trop sèches, et amandes entières. Je les mets ensemble parce qu'à la maison on les mange avec le lben. Je peux les séparer : les dattes seules, 28 DH le kilo.",
@@ -407,4 +407,3 @@ export function replyFor(listing: Listing, text: string) {
     ? `السلام عليكم! شكراً على ${title}. جاهز، ${price} ${unit}. قل لي الكمية وإن كنت ستمر من ${city}.`
     : `Salam ! Merci pour ${title}. C'est prêt, ${price} ${unit}. Dites-moi la quantité et si vous passez à ${city}.`;
 }
-

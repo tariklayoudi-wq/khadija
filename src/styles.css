@@ -126,3 +126,33 @@ html[dir="rtl"] .hero-art { transform:scaleX(-1); }
 html[dir="rtl"] .hero-stamp { right:auto; left:22px; }
 @media(max-width:767px) { .warm-hero { min-height:640px; } .hero-copy { padding:30px 24px 300px; max-width:none; } .hero-copy h1 { font-size:36px; } .hero-description { font-size:14px; line-height:1.7; } .hero-art { object-position:70% bottom; } .hero-wash,html[dir="rtl"] .hero-wash { background:linear-gradient(180deg,#fff8ea 10%,rgba(255,248,234,.96) 38%,rgba(255,248,234,.7) 50%,transparent 68%); } html[dir="rtl"] .hero-art { transform:none; } .hero-stamp { bottom:16px; } .shop-faq { grid-template-columns:1fr; padding:24px; gap:16px; } .cart-header span:first-of-type { display:none; } .welcome-strip { gap:12px; justify-content:flex-start; padding:10px; } }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; } }
+
+/* Night palette: visitor-local 19:00–07:00; photos retain their true colours. */
+html[data-theme="dark"] {
+  --color-canvas:#171c18; --color-surface:#222a23; --color-ink:#f4eee2;
+  --color-muted:#bcb7a9; --color-line:#414b3f; --color-grove:#93c9a3;
+  --color-grove-soft:#2b4031; --color-clay:#dd9465; --color-clay-deep:#efb58a;
+  --color-heart:#ff9e92; --shadow-card:0 10px 28px #0003;
+}
+html[data-theme="dark"] body { background:var(--color-canvas); }
+html[data-theme="dark"] .bg-grove { background-color:#214c38; }
+html[data-theme="dark"] .bg-cream { background-color:#3b4132; }
+html[data-theme="dark"] .text-surface { color:#171c18; }
+html[data-theme="dark"] .warm-hero { background:#20291f; }
+html[data-theme="dark"] .hero-wash { background:linear-gradient(90deg,#182219 3%,#182219f5 25%,#182219bd 43%,#18221915 75%); }
+html[data-theme="dark"][dir="rtl"] .hero-wash { background:linear-gradient(270deg,#182219 3%,#182219f5 25%,#182219bd 43%,#18221915 75%); }
+html[data-theme="dark"] .hero-copy h1 { color:#f0ead9; }
+html[data-theme="dark"] .hero-copy h1 em { color:#f3b68b; }
+html[data-theme="dark"] .hero-eyebrow { color:#e1b892; }
+html[data-theme="dark"] .hero-description,html[data-theme="dark"] .welcome-strip { color:#d0c8b6; }
+html[data-theme="dark"] .hero-primary { background:#c0794b; color:#161c17; }
+html[data-theme="dark"] .hero-secondary,html[data-theme="dark"] .hero-stamp { background:#263526ed; color:#eee5cd; border-color:#6b7656; }
+html[data-theme="dark"] .product-card { border-color:var(--color-line); box-shadow:0 4px 15px #0002; }
+html[data-theme="dark"] .product-add:hover { background:#3b5540; }
+html[data-theme="dark"] .shop-faq { background:#242e24; border-color:#414b3f; }
+html[data-theme="dark"] .checkout-panel,html[data-theme="dark"] .checkout-field { background:var(--color-surface); border-color:var(--color-line); color:var(--color-ink); }
+html[data-theme="dark"] .order-step { background:#3b4132; }
+.theme-select option { background:var(--color-surface); color:var(--color-ink); }
+@media(max-width:767px) {
+  html[data-theme="dark"] .hero-wash,html[data-theme="dark"][dir="rtl"] .hero-wash { background:linear-gradient(180deg,#182219 10%,#182219f5 38%,#182219b3 50%,#18221915 75%); }
+}

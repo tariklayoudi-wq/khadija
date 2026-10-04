@@ -55,6 +55,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </Link>
           <SearchField className="ms-auto hidden min-w-0 max-w-md flex-1 md:block" />
           <LangSwitch locale={locale} setLocale={setLocale} />
+          <ThemeSwitch locale={locale} />
           <div className="ms-auto flex items-center gap-2 md:ms-0">
             <CitySelect className="hidden sm:flex" />
             <Link to="/panier" className="cart-header inline-flex h-11 items-center gap-2 rounded-full bg-clay px-4 text-sm font-semibold text-surface">
@@ -69,7 +70,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
 
       <div className="mx-auto flex max-w-[1440px]">
-        <main className="min-w-0 flex-1 overflow-x-hidden pb-24 lg:pb-10">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-hidden pb-24 lg:pb-10">{children}<div className="px-6 py-4 text-xs text-muted"><a href={`${import.meta.env.BASE_URL}credits-photos.html`} className="underline">{locale === "ar" ? "صور توضيحية · مصادر الصور" : "Photos représentatives · Crédits photos"}</a></div></main>
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 bg-grove text-cream lg:hidden" aria-label="Navigazione">
@@ -88,6 +89,27 @@ export function Shell({ children }: { children: ReactNode }) {
       </nav>
     </div>
   );
+}
+
+function ThemeSwitch({ locale }: { locale: "ar" | "fr" }) {
+  const [preference, setPreference] = useState("auto");
+  useEffect(() => {
+    try { setPreference(localStorage.getItem("khadija-theme") || "auto"); } catch {}
+    const sync = (event: Event) => setPreference((event as CustomEvent).detail.preference);
+    window.addEventListener("khadija-theme-applied", sync);
+    return () => window.removeEventListener("khadija-theme-applied", sync);
+  }, []);
+  return <select aria-label={locale === "ar" ? "مظهر الموقع" : "Apparence du site"}
+    title={locale === "ar" ? "تلقائي: داكن من 19:00 إلى 07:00 حسب توقيت جهازك" : "Auto : sombre de 19 h à 7 h, heure de votre appareil"}
+    className="theme-select h-10 max-w-24 rounded-full border border-cream/30 bg-transparent px-2 text-xs"
+    value={preference} onChange={event => {
+      setPreference(event.target.value);
+      window.dispatchEvent(new CustomEvent("khadija-theme-change", { detail: event.target.value }));
+    }}>
+      <option value="auto">{locale === "ar" ? "تلقائي" : "Auto"}</option>
+      <option value="light">{locale === "ar" ? "فاتح" : "Clair"}</option>
+      <option value="dark">{locale === "ar" ? "داكن" : "Sombre"}</option>
+    </select>;
 }
 
 function Tab({

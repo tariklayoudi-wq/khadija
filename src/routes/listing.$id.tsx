@@ -73,6 +73,7 @@ function ListingPage() {
             <div className="overflow-hidden rounded-xl bg-cream">
               <img src={image} alt={title} className="aspect-square w-full object-cover" />
             </div>
+            {!listing.mine && <p className="mt-2 text-xs text-muted"><a className="underline" href={`${import.meta.env.BASE_URL}credits-photos.html`}>{locale === "ar" ? "صور توضيحية · مصادر الصور" : "Photos représentatives · Crédits photos"}</a></p>}
             {listing.images.length > 1 ? (
               <div className="mt-2 flex gap-2">
                 {listing.images.map((src, index) => (

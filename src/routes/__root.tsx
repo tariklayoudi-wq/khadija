@@ -39,6 +39,7 @@ export const Route = createRootRoute({
   component: () => (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <head>
+        <script src={`${base}theme.js`} />
         <HeadContent />
       </head>
       <body>
