@@ -103,5 +103,5 @@ async function handle(req,res){
   if(req.method==='HEAD')return res.end();fs.createReadStream(file).on('error',()=>{if(!res.headersSent)res.writeHead(500);res.end();}).pipe(res);
 }
 const server=http.createServer((req,res)=>handle(req,res).catch(e=>{if(!res.writableEnded)json(res,e.status||500,{error:e.status?e.message:'Server error; please try again'});}));
-if(require.main===module){server.listen(process.env.PORT||8082);}
+if(require.main===module || process.env.IISNODE_VERSION || process.env.KHADIJA_HOSTED==='1'){server.listen(process.env.PORT||8082);}
 module.exports={server,db,createOrder,updateOrder,products,settings,DATA};
