@@ -50,7 +50,7 @@ $existing = $settingsRaw | ConvertFrom-Json
 $key = ($existing | Where-Object { $_.name -eq 'KHADIJA_ADMIN_KEY' }).value
 if (-not $key) { $bytes=New-Object byte[] 48; $rng=[Security.Cryptography.RandomNumberGenerator]::Create(); $rng.GetBytes($bytes); $key=[Convert]::ToBase64String($bytes); $rng.Dispose() }
 # Single process on the existing free plan; persistent data lives outside deployment content.
-& $azCmd webapp config appsettings set --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --settings 'WEBSITE_NODE_DEFAULT_VERSION=~24' "KHADIJA_ADMIN_KEY=$key" "KHADIJA_ORIGIN=$($cfg.live_url)" -o none
+& $azCmd webapp config appsettings set --name $cfg.azure.app_name --resource-group $cfg.azure.resource_group --settings 'WEBSITE_NODE_DEFAULT_VERSION=~22' "KHADIJA_ADMIN_KEY=$key" "KHADIJA_ORIGIN=$($cfg.live_url)" -o none
 if ($LASTEXITCODE -ne 0) { throw 'Runtime configuration failed' }
 $zip = Join-Path $root "khadija-release.zip"
 Compress-Archive -Path (Join-Path $package "*") -DestinationPath $zip -Force
